@@ -1,6 +1,6 @@
 # Proposed autoencoder architecture for predictive maintenance of the delta robot
 #####
-# Input data has the form of (num. of samples, sequence length, num. of parameters, 1)
+# The input data has the following dimensions: (num. of samples, sequence length, num. of parameters, 1)
 # As indicated in the paper, num. of parameters is 11
 ####
 model = keras.Sequential(
