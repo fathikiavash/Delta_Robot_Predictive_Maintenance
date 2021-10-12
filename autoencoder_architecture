@@ -1,0 +1,53 @@
+# Proposed autoencoder architecture for predictive maintenance of the delta robot
+#####
+# Input data has the form of (num. of samples, sequence length, num. of parameters, 1)
+# As indicated in the paper, num. of parameters is 11
+####
+model = keras.Sequential(
+    [
+        layers.Input(shape=(x_bm_train.shape[1], x_bm_train.shape[2], x_bm_train.shape[3])),
+        layers.Conv2D(
+            filters=32, kernel_size=4, padding="same", activation="relu"
+        ),
+        layers.Dropout(rate=0.2),
+        layers.Conv2D(
+            filters=16, kernel_size=12, padding="same", activation="relu"
+        ),
+        layers.Conv2DTranspose(
+            filters=16, kernel_size=12, padding="same", activation="relu"
+        ),
+        layers.Dropout(rate=0.2),
+        layers.Conv2DTranspose(
+            filters=32, kernel_size=4, padding="same", activation="relu"
+        ),
+        layers.Conv2DTranspose(filters=1, kernel_size=14, padding="same"),
+    ]
+)
+model.compile(optimizer=keras.optimizers.Adam(learning_rate=0.001), loss="mse")
+model.summary()
+
+# Expected output:
+'''
+Model: "sequential_1"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+conv2d_2 (Conv2D)            (None, 5, 11, 32)         544       
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 5, 11, 32)         0         
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 5, 11, 16)         73744     
+_________________________________________________________________
+conv2d_transpose_3 (Conv2DTr (None, 5, 11, 16)         36880     
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 5, 11, 16)         0         
+_________________________________________________________________
+conv2d_transpose_4 (Conv2DTr (None, 5, 11, 32)         8224      
+_________________________________________________________________
+conv2d_transpose_5 (Conv2DTr (None, 5, 11, 1)          6273      
+=================================================================
+Total params: 125,665
+Trainable params: 125,665
+Non-trainable params: 0
+_________________________________________________________________
+'''
